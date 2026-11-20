@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Item List Pengeluaran Biaya Kebun (Arus Kas Keluar) -->
+<com.google.android.material.card.MaterialCardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_xsmall"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/border_contrast"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/min_touch_target_size"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_medium">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvItemTglBiaya"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01/11"
+                android:textSize="@dimen/text_body_regular"
+                android:textStyle="bold"
+                android:textColor="@color/status_pengeluaran" />
+
+            <TextView
+                android:id="@+id/tvItemKategoriBiaya"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:text="Pemupukan"
+                android:textSize="@dimen/text_body_regular"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/tvItemJumlahBiaya"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 4.440.000"
+                android:textSize="@dimen/text_body_large"
+                android:textStyle="bold"
+                android:textColor="@color/status_pengeluaran" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvItemRincianBiaya"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xxsmall"
+            android:text="Beli 10 sak NPK Kujang @ Rp 440.000 + Transportasi"
+            android:textSize="@dimen/text_body_small"
+            android:textColor="@color/text_secondary" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

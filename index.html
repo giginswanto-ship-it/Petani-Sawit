@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>SI-KEBUN SAWIT - Buku Kas & Logbook Keuangan Kebun Sawit</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sawit: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#1b4d3e',
+              900: '#14382d',
+              950: '#0b2019'
+            },
+            sawitgold: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Leaflet CSS & JS for Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js for Visual Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800 flex flex-col">
+
+  <!-- ================= TOP NAVIGATION BAR (ADAPTIF HP HINGGA TABLET) ================= -->
+  <header class="no-print sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      
+      <!-- Baris 1: Logo, Brand & Quick Stats -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between py-2 sm:h-16 gap-2">
+        
+        <!-- Brand & Logo -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-10 h-10 min-w-[40px] rounded-xl bg-gradient-to-br from-sawit-700 to-sawit-900 flex items-center justify-center text-white shadow-md shadow-sawit-800/20">
+              <i class="fa-solid fa-tree text-lg"></i>
+            </div>
+            <div>
+              <div class="flex items-center space-x-1.5">
+                <span class="font-extrabold text-base sm:text-lg tracking-tight text-sawit-900">SI-KEBUN SAWIT</span>
+                <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-300">v1.0 MANDIRI</span>
+              </div>
+              <p class="text-xs text-slate-600 hidden sm:block">Sistem Informasi & Logbook Keuangan Kebun Sawit Terpadu</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Kebun & Periode (Adaptif 100% Lebar Layar di HP) -->
+        <div class="flex items-center space-x-2 w-full sm:w-auto">
+          <!-- Multi Kebun Selector -->
+          <div class="flex-1 sm:flex-initial flex items-center space-x-1.5 bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-1.5 min-h-[48px]">
+            <i class="fa-solid fa-location-dot text-sawit-700 text-sm"></i>
+            <select id="selectActiveKebun" class="w-full bg-transparent font-bold text-slate-900 text-sm focus:outline-none cursor-pointer">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+
+          <!-- Periode Bulan & Tahun -->
+          <div class="flex items-center space-x-1 bg-slate-50 border border-slate-300 rounded-xl px-2 py-1.5 min-h-[48px] shrink-0">
+            <i class="fa-regular fa-calendar-days text-slate-600 text-sm"></i>
+            <select id="filterBulan" class="bg-transparent font-bold text-slate-800 focus:outline-none text-sm cursor-pointer">
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maret</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Agustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11" selected>November</option>
+              <option value="12">Desember</option>
+            </select>
+            <select id="filterTahun" class="bg-transparent font-bold text-slate-800 focus:outline-none text-sm cursor-pointer">
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+            </select>
+          </div>
+
+          <!-- Quick Actions Button Group (Desktop) -->
+          <div class="hidden lg:flex items-center space-x-2">
+            <button onclick="openModalPanen()" class="inline-flex items-center px-3.5 py-2 text-sm font-bold rounded-xl text-white bg-sawit-700 hover:bg-sawit-800 transition shadow-sm min-h-[48px]">
+              <i class="fa-solid fa-plus mr-1.5"></i> Jual TBS
+            </button>
+            <button onclick="openModalBiaya()" class="inline-flex items-center px-3.5 py-2 text-sm font-bold rounded-xl text-white bg-amber-600 hover:bg-amber-700 transition shadow-sm min-h-[48px]">
+              <i class="fa-solid fa-minus mr-1.5"></i> Catat Biaya
+            </button>
+            <button onclick="window.print()" class="p-2 text-slate-700 hover:text-sawit-800 hover:bg-slate-100 rounded-xl transition min-h-[48px] min-w-[48px] flex items-center justify-center" title="Cetak Dokumen">
+              <i class="fa-solid fa-print text-base"></i>
+            </button>
+            <button onclick="openModalBackup()" class="p-2 text-slate-700 hover:text-sawit-800 hover:bg-slate-100 rounded-xl transition min-h-[48px] min-w-[48px] flex items-center justify-center" title="Backup & Restore Data">
+              <i class="fa-solid fa-database text-base"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation Tabs (Scrollable Tanpa Teks Terpotong / Tab Collision) -->
+      <nav class="flex space-x-2 border-t border-slate-200 py-2 overflow-x-auto no-scrollbar" aria-label="Tabs">
+        <!-- Halaman Muka: Data Kebun, Pemilik, dan Lokasi Kebun -->
+        <button id="navTabHalamanMuka" onclick="switchTab('halaman-muka')" class="tab-btn active shrink-0 min-w-max px-4 py-2.5 text-sm sm:text-base font-bold rounded-xl flex items-center space-x-2 transition whitespace-nowrap min-h-[48px]">
+          <i class="fa-solid fa-map-location-dot text-base"></i>
+          <span>Data Kebun & Pemilik</span>
+          <span class="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full ml-1">Utama</span>
+        </button>
+
+        <!-- Buku Kas & Logbook Dokumen -->
+        <button id="navTabLogbook" onclick="switchTab('logbook')" class="tab-btn shrink-0 min-w-max px-4 py-2.5 text-sm sm:text-base font-bold text-slate-700 hover:text-slate-900 rounded-xl flex items-center space-x-2 transition whitespace-nowrap min-h-[48px]">
+          <i class="fa-solid fa-book-bookmark text-base"></i>
+          <span>Buku Kas & Logbook Keuangan</span>
+        </button>
+
+        <!-- Grafik & Analisis HPP -->
+        <button id="navTabAnalisis" onclick="switchTab('analisis')" class="tab-btn shrink-0 min-w-max px-4 py-2.5 text-sm sm:text-base font-bold text-slate-700 hover:text-slate-900 rounded-xl flex items-center space-x-2 transition whitespace-nowrap min-h-[48px]">
+          <i class="fa-solid fa-chart-pie text-base"></i>
+          <span>Grafik & Analisis HPP</span>
+        </button>
+
+        <!-- Cetak Lembar Dokumen Asli -->
+        <button id="navTabCetak" onclick="switchTab('cetak')" class="tab-btn shrink-0 min-w-max px-4 py-2.5 text-sm sm:text-base font-bold text-slate-700 hover:text-slate-900 rounded-xl flex items-center space-x-2 transition whitespace-nowrap min-h-[48px]">
+          <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+          <span>Format Cetak Lembar Resmi</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Quick Action Floating Bar (Android Touch Target >= 48dp) -->
+  <div class="no-print lg:hidden fixed bottom-6 right-4 z-40 flex flex-col space-y-3">
+    <button onclick="openModalPanen()" class="w-14 h-14 min-w-[48px] min-h-[48px] rounded-full bg-sawit-700 text-white shadow-2xl flex items-center justify-center text-xl active:scale-95 transition border-2 border-white/60" title="Jual TBS">
+      <i class="fa-solid fa-cart-plus"></i>
+    </button>
+    <button onclick="openModalBiaya()" class="w-14 h-14 min-w-[48px] min-h-[48px] rounded-full bg-amber-600 text-white shadow-2xl flex items-center justify-center text-xl active:scale-95 transition border-2 border-white/60" title="Catat Biaya">
+      <i class="fa-solid fa-wallet"></i>
+    </button>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="toastContainer" class="fixed top-20 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- ================= MAIN CONTENT AREA (NESTED SCROLL CONTAINER ANDROID) ================= -->
+  <main class="scroll-container-android flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: HALAMAN MUKA (DATA KEBUN, PEMILIK KEBUN, & LOKASI KEBUN)          -->
+    <!-- Persyaratan Utama User: Halaman muka adalah data kebun, pemilik & lokasi  -->
+    <!-- ========================================================================= -->
+    <section id="tabContentHalamanMuka" class="fade-in space-y-6">
+
+      <!-- Hero Banner Profil Kebun & Pemilik -->
+      <div class="bg-gradient-to-r from-sawit-900 via-sawit-800 to-sawit-700 rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 opacity-10 text-white pointer-events-none">
+          <i class="fa-solid fa-tree text-9xl text-[180px]"></i>
+        </div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div class="flex items-center space-x-2 text-sawit-200 text-sm sm:text-base font-medium mb-1">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Kebun Aktif Terdaftar &bull; Perkebunan Rakyat Mandiri</span>
+            </div>
+            <h1 id="heroNamaKebun" class="text-2xl sm:text-4xl font-extrabold tracking-tight">Kebun Sawit Berkah Mandiri</h1>
+            <p class="text-slate-200 text-sm sm:text-base mt-1 flex items-center gap-2">
+              <i class="fa-solid fa-user-tie text-amber-400"></i>
+              <span>Pemilik: <strong id="heroNamaPemilik" class="text-white">H. Syamsudin</strong></span>
+              <span class="text-sawit-300">|</span>
+              <i class="fa-solid fa-location-dot text-rose-400"></i>
+              <span id="heroLokasiSingkat">Desa Makmur Jaya, Blok B3, Kampar - Riau</span>
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button onclick="openModalEditKebun()" class="inline-flex items-center px-4 py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white rounded-xl text-sm sm:text-base font-bold transition active:scale-95 min-h-[48px]">
+              <i class="fa-solid fa-pen-to-square mr-2 text-amber-300"></i> Edit Profil Kebun & Pemilik
+            </button>
+            <button onclick="openModalTambahKebun()" class="inline-flex items-center px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm sm:text-base font-bold shadow-md transition active:scale-95 min-h-[48px]">
+              <i class="fa-solid fa-circle-plus mr-2"></i> Tambah Blok / Kebun Lain
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid 3 Kolom: Data Pemilik, Data Teknis Kebun, dan Lokasi & Peta GPS -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- KARTU 1: DATA PEMILIK KEBUN & LEGALITAS -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">
+                  <i class="fa-solid fa-id-card"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-800 text-base">Data Pemilik Kebun</h3>
+                  <p class="text-sm text-slate-600 font-medium">Identitas pekebun & legalitas</p>
+                </div>
+              </div>
+              <span class="text-xs sm:text-sm bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full border border-emerald-300">
+                Terverifikasi
+              </span>
+            </div>
+
+            <div class="space-y-4 text-sm sm:text-base">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">Nama Lengkap:</span>
+                <span id="pemilikNama" class="font-extrabold text-slate-900 text-right text-base">H. Syamsudin</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">No. WhatsApp / HP:</span>
+                <a id="pemilikKontak" href="https://wa.me/681276543210" target="_blank" class="font-bold text-sawit-800 hover:text-sawit-900 bg-emerald-50 border border-emerald-300 px-3 py-2 rounded-xl flex items-center gap-2 min-h-[48px] text-sm sm:text-base transition">
+                  <i class="fa-brands fa-whatsapp text-emerald-600 text-lg"></i>
+                  <span id="pemilikHpText">0812-7654-3210</span>
+                </a>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">NIK / ID Petani:</span>
+                <span id="pemilikNik" class="font-mono text-sm font-bold text-slate-800">1401021234560001</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <span class="text-slate-600 text-sm font-medium">Alamat Domisili:</span>
+                <span id="pemilikAlamat" class="font-medium text-slate-800 text-right max-w-[220px] text-sm sm:text-base">Jl. Poros Sawit No. 12, RT 03 / RW 02</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">Status Hak Lahan:</span>
+                <span id="pemilikStatusLahan" class="font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-300 text-sm">SHM (Sertifikat Hak Milik)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">Pengumpul Utama (RAM):</span>
+                <span id="pemilikRAM" class="font-extrabold text-amber-800 text-right text-base">RAM Makmur Jaya</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-sm text-slate-600">
+            <span class="font-medium">Kategori: Pekebun Swadaya</span>
+            <button onclick="openModalEditKebun()" class="text-sawit-800 hover:text-sawit-900 font-bold flex items-center gap-1.5 min-h-[48px] px-3 py-2 rounded-xl hover:bg-slate-50 transition">
+              <i class="fa-solid fa-pen text-xs"></i> Ubah Profil
+            </button>
+          </div>
+        </div>
+
+        <!-- KARTU 2: SPESIFIKASI & DATA TEKNIS KEBUN -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-sawit-50 text-sawit-700 flex items-center justify-center font-bold text-lg">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-800 text-base">Data Teknis Kebun</h3>
+                  <p class="text-sm text-slate-600">Luas, populasi & potensi produksi</p>
+                </div>
+              </div>
+              <span id="badgeUmurSawit" class="text-xs sm:text-sm bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full border border-amber-300">
+                TM (9 Thn)
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                <p class="text-sm text-slate-600 font-medium">Luas Lahan</p>
+                <div class="flex items-baseline gap-1 mt-0.5">
+                  <span id="kebunLuasVal" class="text-2xl sm:text-3xl font-black text-slate-900 font-mono-numbers">4.5</span>
+                  <span class="text-sm font-bold text-slate-600">Ha</span>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                <p class="text-sm text-slate-600 font-medium">Jumlah Pokok</p>
+                <div class="flex items-baseline gap-1 mt-0.5">
+                  <span id="kebunPokokVal" class="text-2xl sm:text-3xl font-black text-sawit-800 font-mono-numbers">630</span>
+                  <span class="text-sm font-bold text-slate-600">Pokok</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3.5 text-sm sm:text-base">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">Kerapatan (SPH):</span>
+                <span id="kebunSPH" class="font-bold text-slate-800 text-sm">140 Pokok / Ha (Ideal)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">Varietas Bibit:</span>
+                <span id="kebunBibit" class="font-bold text-slate-800 text-sm sm:text-base text-right">DxP Socfindo (Unggul)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">Tahun Tanam:</span>
+                <span id="kebunTahunTanam" class="font-bold text-slate-800 text-sm sm:text-base">2017 (Umur 9 Tahun)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 text-sm font-medium">Target Panen:</span>
+                <span id="kebunTargetPanen" class="font-extrabold text-sawit-800 text-sm sm:text-base">6.0 Ton / Bulan</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <span class="text-slate-600 text-sm font-medium">Akses & TPH:</span>
+                <span id="kebunKondisiJalan" class="font-medium text-slate-700 text-sm sm:text-base text-right max-w-[220px]">Poros Aspal, TPH Terawat</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-sm text-slate-600">
+            <span class="font-medium">Fase: Tanaman Menghasilkan</span>
+            <button onclick="switchTab('logbook')" class="text-sawit-800 hover:text-sawit-900 font-bold flex items-center gap-1.5 min-h-[48px] px-3 py-2 rounded-xl hover:bg-slate-50 transition">
+              Catat Panen <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- KARTU 3: LOKASI KEBUN & PETA DIGITAL GPS INTERAKTIF -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-3">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg">
+                  <i class="fa-solid fa-map-marked-alt"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-800 text-base">Lokasi & Titik GPS</h3>
+                  <p class="text-sm text-slate-600">Peta koordinat satelit lahan kebun</p>
+                </div>
+              </div>
+              <button onclick="locateUserGPS()" class="text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2 rounded-xl transition min-h-[48px] inline-flex items-center gap-1.5" title="Gunakan GPS Perangkat">
+                <i class="fa-solid fa-crosshairs text-sawit-700 text-base"></i> GPS
+              </button>
+            </div>
+
+            <!-- Alamat & Titik Koordinat -->
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-3 text-sm space-y-1.5">
+              <p class="font-extrabold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-rose-600 text-base"></i>
+                <span id="lokasiAlamatLengkap">Desa Makmur Jaya, Blok B3, Kec. Tapung Hilir</span>
+              </p>
+              <p class="text-slate-600 text-sm">
+                Wilayah: <span id="lokasiKabProv" class="font-bold text-slate-800">Kampar, Riau</span>
+              </p>
+              <p class="text-slate-600 text-sm font-mono">
+                GPS: <span id="lokasiKoordinatGPS" class="font-extrabold text-sawit-800">0.612450, 101.214560</span>
+              </p>
+            </div>
+
+            <!-- Interactive Leaflet Map Container -->
+            <div class="relative rounded-xl overflow-hidden border border-slate-200 shadow-inner">
+              <div id="mapKebun" class="h-48 w-full"></div>
+              <div class="absolute bottom-2.5 right-2.5 z-20 flex gap-1.5">
+                <a id="btnBukaGoogleMaps" href="https://www.google.com/maps?q=0.61245,101.21456" target="_blank" class="bg-white/95 hover:bg-white text-slate-900 font-bold text-sm px-3.5 py-2 rounded-xl shadow-md border border-slate-300 backdrop-blur-sm inline-flex items-center gap-1.5 min-h-[48px]">
+                  <i class="fa-brands fa-google text-rose-600 text-base"></i> Google Maps
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-sm text-slate-600">
+            <span class="font-medium">Arahkan pin untuk ubah lokasi</span>
+            <button onclick="openModalEditKebun()" class="text-sawit-800 hover:text-sawit-900 font-bold flex items-center gap-1.5 min-h-[48px] px-3 py-2 rounded-xl hover:bg-slate-50 transition">
+              <i class="fa-solid fa-location-crosshairs text-xs"></i> Set Titik Baru
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RINGKASAN CEPAT KEBIJAKAN & KEUANGAN BULAN INI DI HALAMAN MUKA -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 mb-6 gap-3">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs uppercase font-extrabold tracking-wider text-sawit-700 bg-sawit-50 px-2 py-0.5 rounded border border-sawit-200">
+                Indikator Otomatis Kebun
+              </span>
+              <h2 class="text-lg font-black text-slate-800">Ringkasan Keuangan Bulan Berjalan</h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Data akumulasi periode <strong id="ringkasanPeriodeLabel" class="text-slate-800">November 2026</strong> untuk kebun terpilih
+            </p>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="switchTab('logbook')" class="inline-flex items-center px-4 py-2 text-sm font-bold text-white bg-sawit-800 hover:bg-sawit-900 rounded-xl transition shadow-sm min-h-[48px]">
+              <i class="fa-solid fa-table-list mr-2"></i> Buka Buku Kas Lengkap
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Kotak Indikator Otomatis Sesuai PDF -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Total Panen Netto -->
+          <div class="bg-slate-50 hover:bg-slate-100/80 p-5 rounded-2xl border border-slate-200 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-bold uppercase tracking-wider text-slate-600">Total Panen Netto</span>
+              <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-weight-hanging"></i>
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-1">
+              <span id="kpiNettoKg" class="text-3xl font-black text-slate-900 font-mono-numbers">5.047</span>
+              <span class="text-base font-bold text-slate-600">Kg</span>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-sm">
+              <span class="text-slate-600">Target: <strong id="kpiTargetTon" class="text-slate-800">6.0</strong> Ton</span>
+              <span id="kpiTargetPct" class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">84.1%</span>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-200 rounded-full h-2 mt-2 overflow-hidden">
+              <div id="kpiProgressBar" class="bg-emerald-500 h-2 rounded-full" style="width: 84.1%"></div>
+            </div>
+          </div>
+
+          <!-- Total Pemasukan -->
+          <div class="bg-slate-50 hover:bg-slate-100/80 p-5 rounded-2xl border border-slate-200 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-bold uppercase tracking-wider text-slate-600">Total Pemasukan</span>
+              <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-arrow-down-left"></i>
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-1">
+              <span class="text-base font-bold text-slate-600">Rp</span>
+              <span id="kpiPemasukanRp" class="text-2xl sm:text-3xl font-black text-slate-900 font-mono-numbers">14.513.800</span>
+            </div>
+            <p class="text-sm text-slate-600 mt-3">
+              Hasil jual TBS ke pengumpul &bull; <span id="kpiJumlahTransaksiPanen" class="font-bold text-slate-800">2 slip</span>
+            </p>
+            <div class="mt-2 text-sm font-bold text-sawit-800">
+              Rata-rata: <span id="kpiRataHargaRp">Rp 2.875</span> / Kg
+            </div>
+          </div>
+
+          <!-- Total Pengeluaran -->
+          <div class="bg-slate-50 hover:bg-slate-100/80 p-5 rounded-2xl border border-slate-200 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-bold uppercase tracking-wider text-slate-600">Total Pengeluaran</span>
+              <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-arrow-up-right"></i>
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-1">
+              <span class="text-base font-bold text-slate-600">Rp</span>
+              <span id="kpiPengeluaranRp" class="text-2xl sm:text-3xl font-black text-rose-700 font-mono-numbers">6.001.750</span>
+            </div>
+            <p class="text-sm text-slate-600 mt-3">
+              Upah + Pupuk + Perawatan & Langsir
+            </p>
+            <div class="mt-2 text-sm font-bold text-rose-700">
+              <span id="kpiJumlahBiayaItem">4 transaksi biaya</span>
+            </div>
+          </div>
+
+          <!-- Laba Bersih & HPP -->
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-2xl border border-amber-300 transition shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-extrabold uppercase tracking-wider text-amber-950">Laba Bersih & HPP</span>
+              <span id="kpiStatusBadge" class="bg-emerald-600 text-white font-bold text-xs px-2.5 py-0.5 rounded-full uppercase">
+                UNTUNG
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-1">
+              <span class="text-base font-bold text-amber-900">Rp</span>
+              <span id="kpiLabaBersihRp" class="text-2xl sm:text-3xl font-black text-emerald-900 font-mono-numbers">8.512.050</span>
+            </div>
+            <div class="mt-3 pt-2 border-t border-amber-200/80 flex items-center justify-between text-sm">
+              <span class="text-slate-700 font-medium">HPP Produksi:</span>
+              <span class="font-black text-slate-900 font-mono-numbers"><span id="kpiHPPRp">Rp 1.189</span> / Kg</span>
+            </div>
+            <p id="kpiHPPNotice" class="text-sm text-emerald-800 font-bold mt-1">
+              ✓ Harga jual di atas HPP (Margin: Rp 1.686/Kg)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAFTAR MULTI-KEBUN PETANI -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-800">Daftar Seluruh Kebun yang Dikelola</h3>
+            <p class="text-sm text-slate-600">Kelola lebih dari satu hamparan/blok kebun dalam satu sistem terintegrasi</p>
+          </div>
+          <button onclick="openModalTambahKebun()" class="inline-flex items-center px-3.5 py-2 text-sm font-bold text-sawit-800 hover:text-sawit-900 bg-sawit-50 hover:bg-sawit-100 rounded-xl transition border border-sawit-300 min-h-[48px]">
+            <i class="fa-solid fa-plus mr-1.5"></i> Tambah Kebun Baru
+          </button>
+        </div>
+
+        <div id="gridMultiKebun" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated dynamically via JavaScript -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: BUKU KAS & LOGBOOK KEUANGAN (PERSIS FORMAT DOKUMEN PDF LAMPIRAN)    -->
+    <!-- ========================================================================= -->
+    <section id="tabContentLogbook" class="fade-in space-y-6 hidden">
+
+      <!-- Header Dokumen Buku Kas -->
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        
+        <!-- Judul & Periode Sesuai PDF -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between pb-6 border-b border-slate-200 gap-4">
+          <div>
+            <div class="inline-block bg-sawit-900 text-white font-black text-xl sm:text-2xl px-4 py-2 rounded-lg tracking-tight uppercase shadow-sm">
+              BUKU KAS & LOGBOOK KEUANGAN KEBUN SAWIT
+            </div>
+            <p class="text-xs sm:text-sm font-semibold text-slate-600 mt-2">
+              Sistem Pencatatan Penjualan TBS, Biaya Perawatan Kebun & Posisi Kas
+            </p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-300 rounded-xl p-3 sm:text-right min-w-[200px]">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">PERIODE LOGBOOK</p>
+            <p id="docPeriodeText" class="text-base sm:text-lg font-black text-sawit-900">November 2026</p>
+          </div>
+        </div>
+
+        <!-- 4 Kotak Profil Kebun Sesuai Header Dokumen PDF -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/60">
+            <p class="text-[11px] font-bold text-slate-500 uppercase">NAMA PEMILIK / KEBUN</p>
+            <p id="docNamaPemilikDanKebun" class="text-sm font-extrabold text-slate-900 mt-0.5">H. Syamsudin / Kebun Berkah</p>
+          </div>
+          <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/60">
+            <p class="text-[11px] font-bold text-slate-500 uppercase">LUAS LAHAN (HEKTAR)</p>
+            <p id="docLuasDanPokok" class="text-sm font-extrabold text-slate-900 mt-0.5">4.5 Ha (630 Pokok)</p>
+          </div>
+          <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/60">
+            <p class="text-[11px] font-bold text-slate-500 uppercase">LOKASI / BLOK KEBUN</p>
+            <p id="docLokasiBlok" class="text-sm font-extrabold text-slate-900 mt-0.5">Desa Makmur Jaya / Blok B3</p>
+          </div>
+          <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/60">
+            <p class="text-[11px] font-bold text-slate-500 uppercase">PENGUMPUL UTAMA (RAM)</p>
+            <p id="docPengumpulRAM" class="text-sm font-extrabold text-slate-900 mt-0.5">RAM Makmur Jaya</p>
+          </div>
+        </div>
+
+        <!-- SECTION 1: DASHBOARD RINGKASAN KEUANGAN KEBUN (INDIKATOR OTOMATIS) -->
+        <div class="mt-8">
+          <div class="flex items-center justify-between pb-3 border-b-2 border-sawit-800 mb-4">
+            <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-sawit-700"></span>
+              1. DASHBOARD RINGKASAN KEUANGAN KEBUN
+            </h2>
+            <span class="text-xs font-bold text-sawit-700 bg-sawit-50 px-2 py-0.5 rounded border border-sawit-200">
+              Indikator Otomatis
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 1. TOTAL PANEN NETTO -->
+            <div class="border-2 border-slate-300 rounded-xl p-4 bg-white relative">
+              <p class="text-xs font-extrabold uppercase text-slate-600">TOTAL PANEN NETTO</p>
+              <div class="flex items-baseline gap-1 my-1">
+                <span id="docNettoKg" class="text-3xl font-black text-slate-900 font-mono-numbers">5.047</span>
+                <span class="text-sm font-bold text-slate-500">Kg</span>
+              </div>
+              <p class="text-xs text-slate-500">
+                Target: <span id="docTargetTon" class="font-bold text-slate-700">6.0</span> Ton / Bulan
+              </p>
+            </div>
+
+            <!-- 2. TOTAL PEMASUKAN -->
+            <div class="border-2 border-emerald-400 rounded-xl p-4 bg-emerald-50/30 relative">
+              <p class="text-xs font-extrabold uppercase text-emerald-800">TOTAL PEMASUKAN</p>
+              <div class="flex items-baseline gap-1 my-1">
+                <span class="text-sm font-bold text-emerald-800">Rp</span>
+                <span id="docPemasukanRp" class="text-3xl font-black text-emerald-900 font-mono-numbers">14.513.800</span>
+              </div>
+              <p class="text-xs text-slate-500">
+                Hasil Jual TBS ke Pengumpul
+              </p>
+            </div>
+
+            <!-- 3. TOTAL PENGELUARAN -->
+            <div class="border-2 border-rose-300 rounded-xl p-4 bg-rose-50/30 relative">
+              <p class="text-xs font-extrabold uppercase text-rose-800">TOTAL PENGELUARAN</p>
+              <div class="flex items-baseline gap-1 my-1">
+                <span class="text-sm font-bold text-rose-800">Rp</span>
+                <span id="docPengeluaranRp" class="text-3xl font-black text-rose-900 font-mono-numbers">6.001.750</span>
+              </div>
+              <p class="text-xs text-slate-500">
+                Upah + Pupuk + Perawatan
+              </p>
+            </div>
+
+            <!-- 4. LABA BERSIH & HPP -->
+            <div class="border-2 border-amber-400 rounded-xl p-4 bg-amber-50/50 relative">
+              <p class="text-xs font-extrabold uppercase text-amber-900">LABA BERSIH & HPP</p>
+              <div class="flex items-baseline gap-1 my-1">
+                <span class="text-sm font-bold text-amber-900">Rp</span>
+                <span id="docLabaBersihRp" class="text-3xl font-black text-emerald-900 font-mono-numbers">8.512.050</span>
+              </div>
+              <p class="text-xs font-bold text-slate-700">
+                HPP: <span id="docHPPRp" class="text-slate-900 font-mono">Rp 1.189</span> / Kg
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: CATATAN PEMASUKAN PENJUALAN TBS (ARUS KAS MASUK) -->
+        <div class="mt-10">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b-2 border-emerald-700 mb-4 gap-2">
+            <div>
+              <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                2. CATATAN PEMASUKAN PENJUALAN TBS (KE PENGUMPUL / RAM)
+              </h2>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                Arus Kas Masuk
+              </span>
+              <button onclick="openModalPanen()" class="inline-flex items-center px-3 py-1 bg-sawit-700 hover:bg-sawit-800 text-white rounded-lg text-xs font-bold shadow-sm transition">
+                <i class="fa-solid fa-plus mr-1"></i> Tambah Transaksi TBS
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabel Pemasukan TBS -->
+          <div class="overflow-x-auto border border-slate-300 rounded-xl shadow-sm">
+            <table class="min-w-full divide-y divide-slate-300 text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 text-slate-700 font-extrabold">
+                <tr>
+                  <th class="py-3 px-3 text-center w-16">Tgl</th>
+                  <th class="py-3 px-3">Pengumpul / RAM</th>
+                  <th class="py-3 px-3 text-right">Bruto (Kg)</th>
+                  <th class="py-3 px-3 text-center">Pot (%)</th>
+                  <th class="py-3 px-3 text-right font-black">Netto (Kg)</th>
+                  <th class="py-3 px-3 text-right">Harga (Rp/Kg)</th>
+                  <th class="py-3 px-3 text-right font-black">Total Diterima (Rp)</th>
+                  <th class="py-3 px-3 text-center">Status</th>
+                  <th class="py-3 px-3 text-center no-print w-20">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyPenjualanTBS" class="divide-y divide-slate-200 bg-white">
+                <!-- Dynamically populated rows -->
+              </tbody>
+              <tfoot class="bg-slate-100 font-black text-slate-900 border-t-2 border-slate-300">
+                <tr>
+                  <td colspan="2" class="py-3 px-3 uppercase text-slate-800">TOTAL BULAN INI:</td>
+                  <td id="tfootTotalBruto" class="py-3 px-3 text-right font-mono-numbers">5.150</td>
+                  <td class="py-3 px-3 text-center text-slate-400">-</td>
+                  <td id="tfootTotalNetto" class="py-3 px-3 text-right text-emerald-800 font-mono-numbers text-base">5.047</td>
+                  <td id="tfootRataHarga" class="py-3 px-3 text-right font-mono-numbers">Rata: 2.875</td>
+                  <td id="tfootTotalDiterima" class="py-3 px-3 text-right text-emerald-800 font-mono-numbers text-base">14.513.800</td>
+                  <td class="py-3 px-3 text-center text-slate-400">-</td>
+                  <td class="py-3 px-3 text-center no-print"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- SECTION 3: CATATAN PENGELUARAN BIAYA PERAWATAN & PANEN KEBUN (ARUS KAS KELUAR) -->
+        <div class="mt-10">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b-2 border-rose-600 mb-4 gap-2">
+            <div>
+              <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
+                3. CATATAN PENGELUARAN BIAYA PERAWATAN & PANEN KEBUN
+              </h2>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                Arus Kas Keluar
+              </span>
+              <button onclick="openModalBiaya()" class="inline-flex items-center px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold shadow-sm transition">
+                <i class="fa-solid fa-plus mr-1"></i> Tambah Pengeluaran
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabel Pengeluaran Biaya -->
+          <div class="overflow-x-auto border border-slate-300 rounded-xl shadow-sm">
+            <table class="min-w-full divide-y divide-slate-300 text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 text-slate-700 font-extrabold">
+                <tr>
+                  <th class="py-3 px-3 text-center w-16">Tgl</th>
+                  <th class="py-3 px-3">Kategori Biaya</th>
+                  <th class="py-3 px-3">Keterangan Rinci (Barang / Jasa / HK)</th>
+                  <th class="py-3 px-3 text-right font-black">Jumlah Biaya (Rp)</th>
+                  <th class="py-3 px-3">Keterangan</th>
+                  <th class="py-3 px-3 text-center no-print w-20">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyPengeluaranBiaya" class="divide-y divide-slate-200 bg-white">
+                <!-- Dynamically populated rows -->
+              </tbody>
+              <tfoot class="bg-slate-100 font-black text-slate-900 border-t-2 border-slate-300">
+                <tr>
+                  <td colspan="3" class="py-3 px-3 uppercase text-slate-800">TOTAL PENGELUARAN BULAN INI:</td>
+                  <td id="tfootTotalPengeluaran" class="py-3 px-3 text-right text-rose-800 font-mono-numbers text-base">6.001.750</td>
+                  <td class="py-3 px-3 text-slate-400">-</td>
+                  <td class="py-3 px-3 text-center no-print"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- FOOTER: CATATAN RUMUS PENGELOLAAN KEUANGAN KEBUN SAWIT (IDENTIK DENGAN DOKUMEN) -->
+        <div class="mt-8 bg-emerald-50/80 border border-emerald-300 rounded-xl p-5 text-slate-800">
+          <div class="flex items-center space-x-2 font-black text-emerald-900 text-sm mb-2">
+            <span class="text-amber-500 text-lg">💡</span>
+            <span>Catatan Rumus Pengelolaan Keuangan Kebun Sawit:</span>
+          </div>
+
+          <div class="space-y-2 text-xs sm:text-sm leading-relaxed text-slate-700">
+            <p>
+              <strong>1. Keuntungan Bersih:</strong> Total Pemasukan − Total Pengeluaran 
+              <span class="text-slate-500">(Hasil hitung data aktif: <span id="rumusKeuntunganDetail" class="font-mono text-emerald-800 font-bold">Rp 14.513.800 − Rp 6.001.750 = Rp 8.512.050</span>)</span>
+            </p>
+            <p>
+              <strong>2. HPP (Harga Pokok Produksi):</strong> Total Pengeluaran ÷ Total Kg Netto 
+              <span class="text-slate-500">(Hasil hitung data aktif: <span id="rumusHPPDetail" class="font-mono text-emerald-800 font-bold">Rp 6.001.750 ÷ 5.047 Kg = Rp 1.189 / Kg</span>)</span>.
+            </p>
+            <div class="mt-3 p-3 bg-white/80 rounded-lg border border-emerald-200 text-emerald-900 font-bold text-xs sm:text-sm flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+              <span id="kesimpulanHPPText">
+                Artinya, selama harga jual TBS di atas Rp 1.189/kg, kebun Anda tetap untung!
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Version Tag -->
+        <div class="mt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 border-t border-slate-200 pt-3">
+          <span>Buku Kas Kebun Sawit — Document Version 1.0</span>
+          <span>Disiapkan untuk Pengelolaan Kebun Mandiri</span>
+          <span>Halaman 1 dari 1</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: GRAFIK & ANALISIS HPP SERTA SIMULASI KEUNTUNGAN KEBUN             -->
+    <!-- ========================================================================= -->
+    <section id="tabContentAnalisis" class="fade-in space-y-6 hidden">
+      
+      <!-- Ringkasan Metrik Produksi & Produktivitas -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold uppercase text-slate-500">Produktivitas per Hektar</p>
+          <div class="flex items-baseline space-x-1 my-1">
+            <span id="analisisProdHa" class="text-3xl font-black text-slate-800 font-mono-numbers">1.121</span>
+            <span class="text-xs font-semibold text-slate-500">Kg / Ha / Bulan</span>
+          </div>
+          <p class="text-xs text-slate-500">Standar TM Normal: 1.000 - 1.800 Kg/Ha/Bln</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold uppercase text-slate-500">Hasil Rata-rata per Pokok</p>
+          <div class="flex items-baseline space-x-1 my-1">
+            <span id="analisisProdPokok" class="text-3xl font-black text-sawit-800 font-mono-numbers">8.01</span>
+            <span class="text-xs font-semibold text-slate-500">Kg / Pokok / Bulan</span>
+          </div>
+          <p class="text-xs text-slate-500">Berdasarkan 630 pokok produktif</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold uppercase text-slate-500">Margin Laba per Kg TBS</p>
+          <div class="flex items-baseline space-x-1 my-1">
+            <span class="text-sm font-bold text-emerald-700">Rp</span>
+            <span id="analisisMarginKg" class="text-3xl font-black text-emerald-700 font-mono-numbers">1.686</span>
+            <span class="text-xs font-semibold text-slate-500">/ Kg</span>
+          </div>
+          <p id="analisisMarginSub" class="text-xs text-emerald-600 font-semibold">Harga Jual (Rp 2.875) − HPP (Rp 1.189)</p>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Chart 1: Arus Kas Pemasukan vs Pengeluaran -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-base">Arus Kas Masuk vs Keluar</h3>
+              <p class="text-xs text-slate-500">Perbandingan pemasukan TBS dan biaya perawatan</p>
+            </div>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded font-semibold">Bulan Berjalan</span>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="chartArusKas"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Komposisi Biaya Pengeluaran -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-base">Komposisi Biaya Perawatan & Panen</h3>
+              <p class="text-xs text-slate-500">Rincian alokasi biaya pupuk, upah, langsir, dll.</p>
+            </div>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded font-semibold">Struktur Biaya</span>
+          </div>
+          <div class="h-64 relative flex items-center justify-center">
+            <canvas id="chartKomposisiBiaya"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR SIMULASI SENSITIVITAS HARGA TBS & BREAK-EVEN POINT -->
+      <div class="bg-gradient-to-br from-slate-900 to-sawit-950 text-white rounded-2xl p-6 sm:p-8 shadow-lg">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-900 flex items-center justify-center font-black text-lg">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <div>
+            <h3 class="text-lg sm:text-xl font-bold tracking-tight">Simulator Sensitivitas Harga TBS vs HPP Kebun</h3>
+            <p class="text-xs text-slate-300">Simulasikan potensi keuntungan kebun Anda jika harga TBS di pabrik/RAM naik atau turun</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-2">
+                <span class="text-slate-300">Simulasi Harga Jual TBS di RAM:</span>
+                <span class="text-amber-400 font-bold font-mono text-base"><span id="sliderHargaLabel">Rp 2.875</span> / Kg</span>
+              </div>
+              <input id="sliderSimulasiHarga" type="range" min="1000" max="4000" step="25" value="2875" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500" oninput="updateSimulasiHarga(this.value)">
+              <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                <span>Rp 1.000</span>
+                <span>Rp 2.000</span>
+                <span>Rp 3.000</span>
+                <span>Rp 4.000</span>
+              </div>
+            </div>
+
+            <div class="bg-white/10 rounded-xl p-4 border border-white/10 space-y-2 text-xs">
+              <div class="flex justify-between">
+                <span class="text-slate-300">Estimasi Total Panen:</span>
+                <span id="simulasiNettoKg" class="font-bold text-white font-mono">5.047 Kg</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-300">HPP Produksi Kebun:</span>
+                <span id="simulasiHPPRp" class="font-bold text-amber-300 font-mono">Rp 1.189 / Kg</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-300">Total Pengeluaran Tetap:</span>
+                <span id="simulasiPengeluaranRp" class="font-bold text-white font-mono">Rp 6.001.750</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-5 border border-white/10 flex flex-col justify-center text-center">
+            <p class="text-xs uppercase tracking-wider text-slate-300 font-bold">Hasil Proyeksi Keuntungan Bersih</p>
+            <div class="my-3">
+              <span id="simulasiHasilLabaRp" class="text-3xl sm:text-4xl font-black text-amber-400 font-mono-numbers">Rp 8.512.050</span>
+            </div>
+            <div id="simulasiMarginBadge" class="inline-block mx-auto bg-emerald-500/20 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/40">
+              Margin: +Rp 1.686 / Kg
+            </div>
+            <p id="simulasiAnalisisTeks" class="text-xs text-slate-300 mt-4 leading-relaxed">
+              Pada harga ini, Anda memperoleh keuntungan bersih sebesar <strong>Rp 8.512.050</strong> untuk periode panen ini.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: FORMAT CETAK LEMBAR RESMI (IDENTIK DENGAN DOKUMEN PDF LAMPIRAN)    -->
+    <!-- ========================================================================= -->
+    <section id="tabContentCetak" class="fade-in space-y-6 hidden">
+      
+      <!-- Print Action Bar -->
+      <div class="no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm">Pratinjau Cetak / Ekspor PDF</h3>
+          <p class="text-xs text-slate-500">Dokumen diformat rapi dan presisi 100% seperti lembar format resmi lampiran</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-sawit-800 hover:bg-sawit-900 text-white rounded-xl text-xs font-bold shadow-md transition">
+            <i class="fa-solid fa-print mr-2"></i> Cetak Dokumen (PDF)
+          </button>
+          <button onclick="exportToCSV()" class="inline-flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold border border-slate-300 transition">
+            <i class="fa-solid fa-file-csv mr-2 text-emerald-600"></i> Ekspor CSV / Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- KERTAS CETAK A4 EMULATOR -->
+      <div class="print-container bg-white shadow-lg mx-auto p-8 rounded-xl max-w-4xl border border-slate-300">
+        
+        <!-- Header Dokumen Cetak -->
+        <div class="flex justify-between items-start pb-4 border-b-2 border-slate-800">
+          <div>
+            <div class="bg-sawit-900 text-white font-black text-xl px-4 py-2 rounded uppercase tracking-wide inline-block">
+              BUKU KAS & LOGBOOK KEUANGAN KEBUN SAWIT
+            </div>
+            <p class="text-xs font-bold text-slate-700 mt-1">
+              Sistem Pencatatan Penjualan TBS, Biaya Perawatan Kebun & Posisi Kas
+            </p>
+          </div>
+          <div class="text-right border border-slate-300 p-2 rounded bg-slate-50 min-w-[180px]">
+            <p class="text-[10px] font-bold uppercase text-slate-500">PERIODE LOGBOOK</p>
+            <p id="printPeriodeText" class="text-sm font-black text-slate-900">Bulan: November / 2026</p>
+          </div>
+        </div>
+
+        <!-- Profil 4 Kolom Cetak -->
+        <div class="grid grid-cols-4 gap-2 border border-slate-300 p-3 rounded mt-3 text-xs bg-slate-50/50">
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase">NAMA PEMILIK / KEBUN</p>
+            <p id="printNamaPemilik" class="font-extrabold text-slate-900 mt-0.5">H. Syamsudin</p>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase">LUAS LAHAN (HEKTAR)</p>
+            <p id="printLuasLahan" class="font-extrabold text-slate-900 mt-0.5">4.5 Ha (630 Pokok)</p>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase">LOKASI / BLOK KEBUN</p>
+            <p id="printLokasiBlok" class="font-extrabold text-slate-900 mt-0.5">Desa Makmur Jaya / Blok B3</p>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase">PENGUMPUL UTAMA (RAM)</p>
+            <p id="printRAM" class="font-extrabold text-slate-900 mt-0.5">RAM Makmur Jaya</p>
+          </div>
+        </div>
+
+        <!-- 1. DASHBOARD RINGKASAN KEUANGAN KEBUN -->
+        <div class="mt-5">
+          <div class="flex justify-between items-center pb-1 border-b border-slate-800 mb-2">
+            <h3 class="text-xs font-black uppercase text-slate-900">1. DASHBOARD RINGKASAN KEUANGAN KEBUN</h3>
+            <span class="text-[10px] font-bold text-slate-600">Indikator Otomatis</span>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2 text-center text-xs">
+            <div class="border border-slate-300 p-2.5 rounded bg-white">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">TOTAL PANEN NETTO</p>
+              <p id="printNettoVal" class="text-lg font-black text-slate-900 my-0.5">5.047 Kg</p>
+              <p class="text-[10px] text-slate-500">Target: <span id="printTargetVal">6.0</span> Ton / Bulan</p>
+            </div>
+            <div class="border border-slate-300 p-2.5 rounded bg-white">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">TOTAL PEMASUKAN</p>
+              <p id="printPemasukanVal" class="text-lg font-black text-slate-900 my-0.5">Rp 14.513.800</p>
+              <p class="text-[10px] text-slate-500">Hasil Jual TBS ke Pengumpul</p>
+            </div>
+            <div class="border border-slate-300 p-2.5 rounded bg-white">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">TOTAL PENGELUARAN</p>
+              <p id="printPengeluaranVal" class="text-lg font-black text-slate-900 my-0.5">Rp 6.001.750</p>
+              <p class="text-[10px] text-slate-500">Upah + Pupuk + Perawatan</p>
+            </div>
+            <div class="border border-slate-300 p-2.5 rounded bg-white">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">LABA BERSIH & HPP</p>
+              <p id="printLabaVal" class="text-lg font-black text-slate-900 my-0.5">Rp 8.512.050</p>
+              <p class="text-[10px] font-bold text-slate-700">HPP: <span id="printHPPVal">Rp 1.189</span> / Kg</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. CATATAN PEMASUKAN PENJUALAN TBS (KE PENGUMPUL / RAM) -->
+        <div class="mt-5">
+          <div class="flex justify-between items-center pb-1 border-b border-slate-800 mb-2">
+            <h3 class="text-xs font-black uppercase text-slate-900">2. CATATAN PEMASUKAN PENJUALAN TBS (KE PENGUMPUL / RAM)</h3>
+            <span class="text-[10px] font-bold text-slate-600">Arus Kas Masuk</span>
+          </div>
+
+          <table class="w-full text-xs border border-slate-300 text-left">
+            <thead class="bg-slate-100 font-bold border-b border-slate-300">
+              <tr>
+                <th class="p-1.5 border-r border-slate-300 text-center w-14">Tgl</th>
+                <th class="p-1.5 border-r border-slate-300">Pengumpul / RAM</th>
+                <th class="p-1.5 border-r border-slate-300 text-right">Bruto (Kg)</th>
+                <th class="p-1.5 border-r border-slate-300 text-center">Pot (%)</th>
+                <th class="p-1.5 border-r border-slate-300 text-right font-black">Netto (Kg)</th>
+                <th class="p-1.5 border-r border-slate-300 text-right">Harga (Rp/Kg)</th>
+                <th class="p-1.5 border-r border-slate-300 text-right font-black">Total Diterima (Rp)</th>
+                <th class="p-1.5 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="printTbodyTBS" class="divide-y divide-slate-200">
+              <!-- populated -->
+            </tbody>
+            <tfoot class="bg-slate-100 font-black border-t-2 border-slate-400">
+              <tr>
+                <td colspan="2" class="p-1.5 border-r border-slate-300">TOTAL BULAN INI:</td>
+                <td id="printTotalBruto" class="p-1.5 border-r border-slate-300 text-right">5.150</td>
+                <td class="p-1.5 border-r border-slate-300 text-center">-</td>
+                <td id="printTotalNetto" class="p-1.5 border-r border-slate-300 text-right text-emerald-800">5.047</td>
+                <td id="printRataHarga" class="p-1.5 border-r border-slate-300 text-right">Rata: 2.875</td>
+                <td id="printTotalDiterima" class="p-1.5 border-r border-slate-300 text-right text-emerald-800">14.513.800</td>
+                <td class="p-1.5 text-center">-</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- 3. CATATAN PENGELUARAN BIAYA PERAWATAN & PANEN KEBUN -->
+        <div class="mt-5">
+          <div class="flex justify-between items-center pb-1 border-b border-slate-800 mb-2">
+            <h3 class="text-xs font-black uppercase text-slate-900">3. CATATAN PENGELUARAN BIAYA PERAWATAN & PANEN KEBUN</h3>
+            <span class="text-[10px] font-bold text-slate-600">Arus Kas Keluar</span>
+          </div>
+
+          <table class="w-full text-xs border border-slate-300 text-left">
+            <thead class="bg-slate-100 font-bold border-b border-slate-300">
+              <tr>
+                <th class="p-1.5 border-r border-slate-300 text-center w-14">Tgl</th>
+                <th class="p-1.5 border-r border-slate-300 w-36">Kategori Biaya</th>
+                <th class="p-1.5 border-r border-slate-300">Keterangan Rinci (Barang / Jasa / HK)</th>
+                <th class="p-1.5 border-r border-slate-300 text-right font-black w-32">Jumlah Biaya (Rp)</th>
+                <th class="p-1.5 w-28">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody id="printTbodyBiaya" class="divide-y divide-slate-200">
+              <!-- populated -->
+            </tbody>
+            <tfoot class="bg-slate-100 font-black border-t-2 border-slate-400">
+              <tr>
+                <td colspan="3" class="p-1.5 border-r border-slate-300">TOTAL PENGELUARAN BULAN INI:</td>
+                <td id="printTotalPengeluaran" class="p-1.5 border-r border-slate-300 text-right text-rose-800">6.001.750</td>
+                <td class="p-1.5 text-center">-</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- CATATAN RUMUS PADA LEMBAR CETAK -->
+        <div class="mt-4 bg-emerald-50/70 border border-emerald-300 rounded p-3 text-[11px] text-slate-800">
+          <p class="font-bold text-emerald-900 mb-1">💡 Catatan Rumus Pengelolaan Keuangan Kebun Sawit:</p>
+          <p>
+            <strong>1. Keuntungan Bersih:</strong> Total Pemasukan − Total Pengeluaran 
+            (Contoh di atas: <span id="printRumusLaba">Rp 14.513.800 − Rp 6.001.750 = Rp 8.512.050</span>)
+          </p>
+          <p class="mt-0.5">
+            <strong>2. HPP (Harga Pokok Produksi):</strong> Total Pengeluaran ÷ Total Kg Netto 
+            (Contoh di atas: <span id="printRumusHPP">Rp 6.001.750 ÷ 5.047 Kg = Rp 1.189 / Kg</span>).
+          </p>
+          <p id="printKesimpulanHPP" class="mt-1 font-bold text-emerald-800">
+            Artinya, selama harga jual TBS di atas Rp 1.189/kg, kebun Anda tetap untung!
+          </p>
+        </div>
+
+        <div class="mt-4 flex justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-300">
+          <span>Buku Kas Kebun Sawit — Document Version 1.0</span>
+          <span>Disiapkan untuk Pengelolaan Kebun Mandiri</span>
+          <span>Halaman 1 dari 1</span>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="no-print bg-white border-t border-slate-200 mt-12 py-6 text-sm text-slate-600 pb-36 sm:pb-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span class="font-bold text-slate-700">SI-KEBUN SAWIT</span>
+        <span>&bull; Buku Kas & Logbook Keuangan Kebun Mandiri</span>
+      </div>
+      <div>
+        <span>Status Database: </span>
+        <span id="serverStatusBadge" class="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+          Tersimpan di Sistem & Server
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: FORM INPUT / EDIT TRANSAKSI PENJUALAN TBS (PEMASUKAN)               -->
+  <!-- ========================================================================= -->
+  <div id="modalPanen" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-cart-plus"></i>
+          </div>
+          <h3 id="modalPanenTitle" class="text-base font-extrabold text-slate-900">Catat Penjualan TBS (RAM)</h3>
+        </div>
+        <button onclick="closeModalPanen()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formPanen" onsubmit="savePanen(event)" class="mt-4 space-y-3.5">
+        <input type="hidden" id="formPanenId">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Panen *</label>
+            <input type="date" id="inputPanenTgl" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Pengumpul / RAM *</label>
+            <input type="text" id="inputPanenRAM" placeholder="Contoh: RAM Makmur Jaya" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Bruto (Kg) *</label>
+            <input type="number" step="0.1" id="inputPanenBruto" placeholder="2500" required oninput="calcPanenForm()" class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Potongan (%)</label>
+            <input type="number" step="0.1" id="inputPanenPot" placeholder="2.0" value="2.0" oninput="calcPanenForm()" class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Netto (Kg)</label>
+            <input type="text" id="inputPanenNettoPreview" readonly class="w-full text-xs sm:text-sm font-black font-mono bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-lg px-2.5 py-1.5">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Harga (Rp / Kg) *</label>
+            <input type="number" id="inputPanenHarga" placeholder="2850" required oninput="calcPanenForm()" class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Total Diterima (Rp)</label>
+            <input type="text" id="inputPanenTotalPreview" readonly class="w-full text-xs sm:text-sm font-black font-mono bg-emerald-50 text-emerald-900 border border-emerald-300 rounded-lg px-3 py-2">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status Pembayaran</label>
+            <select id="inputPanenStatus" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+              <option value="Lunas" selected>Lunas</option>
+              <option value="Belum Lunas">Belum Lunas (Tempo)</option>
+              <option value="Sebagian">Sebagian</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">No. Nota / Slip Timbang</label>
+            <input type="text" id="inputPanenNota" placeholder="NOTA-0511/MJ" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Tambahan (Kualitas Buah/Brondolan)</label>
+          <input type="text" id="inputPanenCatatan" placeholder="Buah matang merah, brondolan segar, rotasi panen ke-1" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex justify-end space-x-2">
+          <button type="button" onclick="closeModalPanen()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Batal</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-sawit-700 hover:bg-sawit-800 rounded-lg shadow-sm transition">Simpan Transaksi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: FORM INPUT / EDIT TRANSAKSI BIAYA (PENGELUARAN)                     -->
+  <!-- ========================================================================= -->
+  <div id="modalBiaya" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <h3 id="modalBiayaTitle" class="text-base font-extrabold text-slate-900">Catat Pengeluaran Biaya Kebun</h3>
+        </div>
+        <button onclick="closeModalBiaya()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formBiaya" onsubmit="saveBiaya(event)" class="mt-4 space-y-3.5">
+        <input type="hidden" id="formBiayaId">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal *</label>
+            <input type="date" id="inputBiayaTgl" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Biaya *</label>
+            <select id="inputBiayaKategori" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+              <option value="Pemupukan">Pemupukan (Pupuk NPK/Urea/Dolomit)</option>
+              <option value="Upah Perawatan">Upah Perawatan (Tabur/Semprot/Babat/HK)</option>
+              <option value="Upah Panen & Langsir">Upah Panen & Langsir (Dodos/Motor/Angkut)</option>
+              <option value="Pestisida & Herbisida">Pestisida & Herbisida (Racun Rumput/Hama)</option>
+              <option value="Pembersihan & Pruning">Pembersihan & Pruning (Tunas Pelepah)</option>
+              <option value="Pengadaan Alat & Sarana">Pengadaan Alat & Sarana (Dodos/Egrek/Angkong)</option>
+              <option value="Lain-lain">Lain-lain / Biaya Tak Terduga</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan Rinci (Barang / Jasa / HK) *</label>
+          <textarea id="inputBiayaRincian" rows="2" placeholder="Contoh: Beli 10 sak NPK Kujang @ Rp 440.000 + Transportasi" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Biaya (Rp) *</label>
+            <input type="number" id="inputBiayaJumlah" placeholder="4400000" required class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan / Penerima *</label>
+            <input type="text" id="inputBiayaKeterangan" placeholder="Toko Tani / Tunai / Pemanen A" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Metode Pembayaran</label>
+          <select id="inputBiayaMetode" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            <option value="Tunai">Tunai</option>
+            <option value="Transfer Bank">Transfer Bank</option>
+            <option value="Bon / Hutang Toko">Bon / Hutang Toko</option>
+          </select>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex justify-end space-x-2">
+          <button type="button" onclick="closeModalBiaya()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Batal</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow-sm transition">Simpan Pengeluaran</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: FORM EDIT / TAMBAH DATA KEBUN, PEMILIK, & LOKASI GPS              -->
+  <!-- ========================================================================= -->
+  <div id="modalKebun" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-sawit-100 text-sawit-800 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-tree"></i>
+          </div>
+          <h3 id="modalKebunTitle" class="text-base font-extrabold text-slate-900">Edit Profil Kebun & Pemilik</h3>
+        </div>
+        <button onclick="closeModalKebun()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formKebun" onsubmit="saveKebun(event)" class="mt-4 space-y-4">
+        <input type="hidden" id="formKebunId">
+
+        <!-- Bagian 1: Identitas Pemilik -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sawit-800 bg-sawit-50 p-2 rounded mb-3">
+            1. Data Pemilik Kebun
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nama Pemilik / Petani *</label>
+              <input type="text" id="inputKebunNamaPemilik" placeholder="H. Syamsudin" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">No. WhatsApp / HP</label>
+              <input type="text" id="inputKebunNoHP" placeholder="0812-7654-3210" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">NIK / KTP</label>
+              <input type="text" id="inputKebunNIK" placeholder="1401021234560001" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Domisili Pemilik</label>
+              <input type="text" id="inputKebunAlamatPemilik" placeholder="Jl. Poros Sawit No. 12" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagian 2: Karakteristik Kebun -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sawit-800 bg-sawit-50 p-2 rounded mb-3">
+            2. Karakteristik & Teknis Kebun
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kebun / Blok *</label>
+              <input type="text" id="inputKebunNama" placeholder="Kebun Sawit Berkah Mandiri" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Status Lahan</label>
+              <select id="inputKebunStatusLahan" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+                <option value="SHM (Sertifikat Hak Milik)">SHM</option>
+                <option value="SKT (Surat Keterangan Tanah)">SKT</option>
+                <option value="Girik / Adat">Girik / Adat</option>
+                <option value="HGU">HGU</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 mt-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Luas Lahan (Ha) *</label>
+              <input type="number" step="0.1" id="inputKebunLuas" placeholder="4.5" required class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Pokok *</label>
+              <input type="number" id="inputKebunPokok" placeholder="630" required class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Target Panen (Ton/Bulan)</label>
+              <input type="number" step="0.1" id="inputKebunTarget" placeholder="6.0" required class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Varietas Bibit</label>
+              <input type="text" id="inputKebunVarietas" placeholder="DxP Socfindo / Dami Mas" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Tanam</label>
+              <input type="number" id="inputKebunTahunTanam" placeholder="2017" class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Pengumpul Utama (RAM) *</label>
+              <input type="text" id="inputKebunRAM" placeholder="RAM Makmur Jaya" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagian 3: Lokasi Kebun & Titik GPS -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sawit-800 bg-sawit-50 p-2 rounded mb-3">
+            3. Lokasi Kebun & Titik GPS Peta
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Desa / Blok Kebun *</label>
+              <input type="text" id="inputKebunLokasiBlok" placeholder="Desa Makmur Jaya, Blok B3" required class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Kecamatan</label>
+              <input type="text" id="inputKebunKecamatan" placeholder="Tapung Hilir" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Kabupaten</label>
+              <input type="text" id="inputKebunKabupaten" placeholder="Kampar" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Provinsi</label>
+              <input type="text" id="inputKebunProvinsi" placeholder="Riau" class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Latitude (Lintang)</label>
+              <input type="number" step="0.000001" id="inputKebunLat" placeholder="0.612450" class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Longitude (Bujur)</label>
+              <input type="number" step="0.000001" id="inputKebunLng" placeholder="101.214560" class="w-full text-xs sm:text-sm font-mono border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sawit-600 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+          <button type="button" id="btnHapusKebun" onclick="deleteActiveKebun()" class="px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-lg transition border border-rose-200">
+            <i class="fa-solid fa-trash mr-1"></i> Hapus Kebun Ini
+          </button>
+          <div class="flex space-x-2">
+            <button type="button" onclick="closeModalKebun()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Batal</button>
+            <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-sawit-700 hover:bg-sawit-800 rounded-lg shadow-sm transition">Simpan Data Kebun</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: BACKUP & RESTORE DATA                                              -->
+  <!-- ========================================================================= -->
+  <div id="modalBackup" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-800 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <h3 class="text-base font-extrabold text-slate-900">Cadangkan / Pulihkan Data</h3>
+        </div>
+        <button onclick="closeModalBackup()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4">
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+          <h4 class="font-bold text-xs text-slate-800">1. Cadangkan Data (Backup JSON)</h4>
+          <p class="text-xs text-slate-500 mt-1">Unduh seluruh catatan kebun, panen TBS, dan pengeluaran ke dalam file JSON di komputer Anda.</p>
+          <button onclick="downloadBackupJSON()" class="mt-3 w-full py-2 bg-sawit-800 hover:bg-sawit-900 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-download"></i> Unduh File Backup
+          </button>
+        </div>
+
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+          <h4 class="font-bold text-xs text-slate-800">2. Pulihkan Data (Restore JSON)</h4>
+          <p class="text-xs text-slate-500 mt-1">Muat ulang data dari file backup JSON sebelumnya.</p>
+          <input type="file" id="fileRestore" accept=".json" class="mt-3 text-xs w-full">
+          <button onclick="restoreFromJSON()" class="mt-2 w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-upload"></i> Pulihkan Database
+          </button>
+        </div>
+
+        <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl">
+          <h4 class="font-bold text-xs text-rose-800">3. Reset ke Data Bawaan (Contoh PDF)</h4>
+          <p class="text-xs text-rose-600 mt-1">Kembalikan data seperti awal sesuai contoh pada dokumen PDF Buku Kas Sawit.</p>
+          <button onclick="resetToDefaultData()" class="mt-2 w-full py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition">
+            Reset Data Bawaan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic JS -->
+  <script src="app.js"></script>
+</body>
+</html>

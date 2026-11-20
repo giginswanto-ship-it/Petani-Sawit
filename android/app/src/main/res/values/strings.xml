@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SI-KEBUN SAWIT</string>
+    <string name="app_subtitle">Buku Kas &amp; Logbook Keuangan Kebun Sawit</string>
+    
+    <string name="header_kebun_default">Kebun Sawit Berkah Mandiri</string>
+    <string name="header_pemilik_default">H. Syamsudin (SHM)</string>
+    <string name="header_lokasi_default">Desa Makmur Jaya, Blok B3, Kampar - Riau</string>
+    <string name="header_ram_default">RAM Makmur Jaya</string>
+
+    <string name="tab_kebun_pemilik">Data Kebun &amp; Pemilik</string>
+    <string name="tab_buku_kas">Buku Kas &amp; Logbook</string>
+    <string name="tab_analisis_hpp">Grafik &amp; Analisis HPP</string>
+
+    <string name="label_panen_netto">TOTAL PANEN NETTO</string>
+    <string name="label_pemasukan">TOTAL PEMASUKAN</string>
+    <string name="label_pengeluaran">TOTAL PENGELUARAN</string>
+    <string name="label_laba_hpp">LABA BERSIH &amp; HPP</string>
+
+    <string name="btn_jual_tbs">+ Jual TBS</string>
+    <string name="btn_catat_biaya">+ Catat Biaya</string>
+    <string name="btn_simpan">Simpan Data</string>
+    <string name="btn_batal">Batal</string>
+</resources>

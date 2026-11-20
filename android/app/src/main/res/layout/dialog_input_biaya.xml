@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    Dialog Input Pengeluaran Biaya Kebun (Arus Kas Keluar)
+    Dibungkus ScrollView agar keyboard tidak memotong form!
+    Target sentuh minimal 48dp x 48dp, teks minimal 14sp-16sp.
+-->
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:background="@color/surface_card">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_large">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Catat Pengeluaran Kebun"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"
+            android:textColor="@color/status_pengeluaran" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xxsmall"
+            android:text="Biaya pemupukan, upah perawatan (HK), panen &amp; langsir"
+            android:textSize="@dimen/text_body_small"
+            android:textColor="@color/text_secondary" />
+
+        <!-- Field Tanggal Biaya -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:hint="Tanggal (YYYY-MM-DD)">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTglBiaya"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_min_height"
+                android:inputType="date"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Kategori Biaya (Spinner/Dropdown Touch Friendly) -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:hint="Kategori Pengeluaran">
+            <AutoCompleteTextView
+                android:id="@+id/actvKategoriBiaya"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_min_height"
+                android:inputType="none"
+                android:text="Pemupukan"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Rincian Barang / Jasa / HK -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:hint="Keterangan Rinci (Barang / Jasa / HK)">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etRincianBiaya"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/input_field_min_height"
+                android:inputType="textMultiLine"
+                android:lines="2"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Jumlah Biaya (Rp) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:hint="Jumlah Biaya (Rp)">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etJumlahBiaya"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_min_height"
+                android:inputType="number"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Keterangan / Toko / Penerima -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:hint="Penerima / Keterangan (Toko Tani / Pemanen A / Tunai)">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPenerimaBiaya"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_min_height"
+                android:inputType="textCapWords"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Tombol Aksi Bawah (Min Touch Target 48dp) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBatalBiaya"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/min_touch_target_size"
+                android:text="@string/btn_batal"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_body_regular" />
+
+            <Space
+                android:layout_width="@dimen/spacing_small"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSimpanBiaya"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/min_touch_target_size"
+                android:backgroundTint="@color/status_pengeluaran"
+                android:text="@string/btn_simpan"
+                android:textColor="@color/text_on_primary"
+                android:textSize="@dimen/text_body_regular" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

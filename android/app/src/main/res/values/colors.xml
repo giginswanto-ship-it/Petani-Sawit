@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Palet Warna Kontras Tinggi untuk Penggunaan Outdoor di Kebun Sawit -->
+    <color name="sawit_primary">#14532D</color>          <!-- Hijau Daun Sawit Gelap (Sangat Kontras) -->
+    <color name="sawit_primary_variant">#0B3B20</color>  <!-- Varian Lebih Gelap untuk Status Bar -->
+    <color name="sawit_secondary">#16A34A</color>        <!-- Hijau Segar -->
+    <color name="sawit_accent_gold">#D97706</color>     <!-- Emas TBS Matang -->
+    
+    <color name="bg_screen">#F8FAFC</color>             <!-- Abu-abu Terang Bersih -->
+    <color name="surface_card">#FFFFFF</color>          <!-- Kartu Putih Bersih -->
+    <color name="border_contrast">#CBD5E1</color>       <!-- Border Kartu Tegas -->
+
+    <!-- Teks Kontras Tinggi (Outdoor Sunlight Readable) -->
+    <color name="text_primary">#0F172A</color>          <!-- Hitam Pekat Kebiruan (Sangat Jelas) -->
+    <color name="text_secondary">#334155</color>        <!-- Abu-abu Gelap (Bukan Abu-abu Pudar) -->
+    <color name="text_on_primary">#FFFFFF</color>       <!-- Putih di atas Hijau -->
+
+    <!-- Status Indikator -->
+    <color name="status_untung">#15803D</color>         <!-- Laba Positif -->
+    <color name="status_untung_bg">#DCFCE7</color>      <!-- Latar Laba -->
+    <color name="status_pengeluaran">#BE123C</color>    <!-- Beban Biaya -->
+    <color name="status_pengeluaran_bg">#FFE4E6</color> <!-- Latar Beban -->
+    <color name="badge_pemupukan">#DC2626</color>
+    <color name="badge_panen">#B45309</color>
+    <color name="badge_perawatan">#4338CA</color>
+</resources>

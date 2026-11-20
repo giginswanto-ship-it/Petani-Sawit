@@ -1,0 +1,19 @@
+{
+  "name": "petani-sawit-logbook",
+  "version": "1.0.0",
+  "description": "Sistem Informasi & Logbook Keuangan Kebun Sawit Terpadu (Pencatatan Penjualan TBS, Biaya Perawatan & Posisi Kas)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "sawit",
+    "kebun-sawit",
+    "buku-kas",
+    "logbook-keuangan",
+    "tbs",
+    "pertanian"
+  ],
+  "author": "Petani Sawit Mandiri",
+  "license": "MIT"
+}

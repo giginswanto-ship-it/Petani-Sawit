@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    Dialog Input Penjualan TBS (Arus Kas Masuk)
+    Dibungkus ScrollView agar saat keyboard virtual muncul, field tidak terpotong!
+    Target sentuh minimal 48dp x 48dp, teks minimal 14sp-16sp.
+-->
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:background="@color/surface_card">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_large">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Catat Penjualan TBS (RAM)"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"
+            android:textColor="@color/sawit_primary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xxsmall"
+            android:text="Arus kas masuk dari hasil panen sawit ke pengumpul"
+            android:textSize="@dimen/text_body_small"
+            android:textColor="@color/text_secondary" />
+
+        <!-- Field Tanggal Panen -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:hint="Tanggal Panen (YYYY-MM-DD)">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTglPanen"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_min_height"
+                android:inputType="date"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Field Pengumpul / RAM -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:hint="Nama Pengumpul / RAM">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNamaRAM"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_min_height"
+                android:inputType="textCapWords"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Baris Bruto & Potongan (Bobot Adaptif 50:50) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/spacing_xsmall"
+                android:hint="Bruto (Kg)">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBrutoKg"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/input_field_min_height"
+                    android:inputType="numberDecimal"
+                    android:textSize="@dimen/text_body_large" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Potongan (%)">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPotPersen"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/input_field_min_height"
+                    android:inputType="numberDecimal"
+                    android:text="2.0"
+                    android:textSize="@dimen/text_body_large" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Field Harga per Kg -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:hint="Harga Satuan (Rp / Kg)">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etHargaKg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_min_height"
+                android:inputType="number"
+                android:textSize="@dimen/text_body_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Box Preview Hasil Hitung Otomatis -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:background="@drawable/bg_metric_box"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_medium">
+
+            <TextView
+                android:id="@+id/tvPreviewNetto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Netto Otomatis: 0 Kg"
+                android:textColor="@color/sawit_primary"
+                android:textSize="@dimen/text_body_large"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPreviewTotalDiterima"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xxsmall"
+                android:text="Total Diterima: Rp 0"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Tombol Aksi Bawah (Min Touch Target 48dp) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBatalPanen"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/min_touch_target_size"
+                android:text="@string/btn_batal"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_body_regular" />
+
+            <Space
+                android:layout_width="@dimen/spacing_small"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSimpanPanen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/min_touch_target_size"
+                android:backgroundTint="@color/sawit_primary"
+                android:text="@string/btn_simpan"
+                android:textColor="@color/text_on_primary"
+                android:textSize="@dimen/text_body_regular" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

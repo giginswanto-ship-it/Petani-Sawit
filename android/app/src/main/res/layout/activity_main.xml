@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    SI-KEBUN SAWIT - Layout Utama Aplikasi Android
+    Standar Desain Android: 
+    - Satuan Responsif (dp untuk dimensi, sp untuk teks)
+    - ScrollView / NestedScrollView Container (mencegah cutoff saat keyboard muncul)
+    - Layout Adaptif (ConstraintLayout 0dp / match_parent / wrap_content, tanpa hardcoded width)
+    - Aksesibilitas (Touch target >= 48dp, teks isi >= 14sp-16sp, kontras tinggi outdoor)
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_screen">
+
+    <!-- Top AppBar dengan Identitas Aplikasi -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/sawit_primary">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:minHeight="@dimen/min_touch_target_size"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/text_on_primary"
+            app:subtitle="@string/app_subtitle"
+            app:subtitleTextColor="#D1FAE5" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- CONTAINER SCROLLABLE: NestedScrollView agar konten tidak terpotong keyboard -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/mainScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/bottom_scroll_padding"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- ConstraintLayout Adaptif (Melebar Dinamis Sesuai Layar HP hingga Tablet) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_medium">
+
+            <!-- ============================================================= -->
+            <!-- 1. HALAMAN MUKA: BANNER PROFIL DATA KEBUN & PEMILIK           -->
+            <!-- ============================================================= -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardHeroKebun"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/sawit_primary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kebun Aktif Terdaftar • Perkebunan Mandiri"
+                        android:textColor="#A7F3D0"
+                        android:textSize="@dimen/text_caption"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvHeroNamaKebun"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xxsmall"
+                        android:text="@string/header_kebun_default"
+                        android:textColor="@color/text_on_primary"
+                        android:textSize="@dimen/text_headline"
+                        android:textStyle="bold" />
+
+                    <!-- Data Pemilik & Lokasi Singkat -->
+                    <TextView
+                        android:id="@+id/tvHeroPemilikLokasi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xsmall"
+                        android:text="Pemilik: H. Syamsudin | Desa Makmur Jaya, Blok B3, Kampar - Riau"
+                        android:textColor="#E2E8F0"
+                        android:textSize="@dimen/text_body_regular" />
+
+                    <!-- Tombol Aksi Profil (Target Sentuh Minimal 48dp) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnEditProfilKebun"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:minHeight="@dimen/min_touch_target_size"
+                            android:text="Edit Profil Kebun"
+                            android:textSize="@dimen/text_body_small"
+                            android:textColor="@color/sawit_primary" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ============================================================= -->
+            <!-- 2. SPESIFIKASI KEBUN & DATA PEMILIK LENGKAP                   -->
+            <!-- ============================================================= -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDataTeknis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/surface_card"
+                app:strokeColor="@color/border_contrast"
+                app:strokeWidth="1dp"
+                app:layout_constraintTop_toBottomOf="@id/cardHeroKebun"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Karakteristik Lahan &amp; Legalitas"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_title"
+                        android:textStyle="bold" />
+
+                    <!-- Grid Data Teknis: Luas & Pokok (Bobot Adaptif layout_weight) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_metric_box"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_small">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Luas Lahan"
+                                android:textSize="@dimen/text_caption"
+                                android:textColor="@color/text_secondary" />
+                            <TextView
+                                android:id="@+id/tvLuasLahan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="4.5 Ha"
+                                android:textSize="@dimen/text_headline"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary" />
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="@dimen/spacing_xsmall"
+                            android:layout_height="wrap_content" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_metric_box"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_small">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jumlah Pokok"
+                                android:textSize="@dimen/text_caption"
+                                android:textColor="@color/text_secondary" />
+                            <TextView
+                                android:id="@+id/tvJumlahPokok"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="630 Pokok"
+                                android:textSize="@dimen/text_headline"
+                                android:textStyle="bold"
+                                android:textColor="@color/sawit_primary" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Rincian Parameter (Keterbacaan >= 15sp) -->
+                    <TextView
+                        android:id="@+id/tvVarietasBibit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="Varietas: DxP Socfindo (Unggul Bersertifikat)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_body_regular" />
+
+                    <TextView
+                        android:id="@+id/tvTahunTanam"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xxsmall"
+                        android:text="Tahun Tanam: 2017 (Umur 9 Tahun - TM Prima)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_body_regular" />
+
+                    <TextView
+                        android:id="@+id/tvRAMPengumpul"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xxsmall"
+                        android:text="Pengumpul Utama: RAM Makmur Jaya"
+                        android:textColor="@color/sawit_accent_gold"
+                        android:textSize="@dimen/text_body_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvKoordinatGPS"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xxsmall"
+                        android:text="Titik GPS: 0.612450, 101.214560 (Tapung Hilir)"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_body_regular" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ============================================================= -->
+            <!-- 3. DASHBOARD RINGKASAN KEUANGAN KEBUN (INDIKATOR OTOMATIS)    -->
+            <!-- ============================================================= -->
+            <TextView
+                android:id="@+id/tvJudulDashboard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:text="Ringkasan Keuangan (Bulan Berjalan)"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/cardDataTeknis"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Baris KPI 1: Panen Netto & Pemasukan (layout_weight 50:50) -->
+            <LinearLayout
+                android:id="@+id/rowKpi1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tvJudulDashboard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- KPI Panen Netto -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_xsmall"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation"
+                    app:strokeColor="@color/border_contrast"
+                    app:strokeWidth="1dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_medium">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_panen_netto"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/text_secondary"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvTotalPanenNetto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xxsmall"
+                            android:text="5.047 Kg"
+                            android:textSize="@dimen/text_headline"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Target: 6.0 Ton (84.1%)"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/sawit_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- KPI Pemasukan TBS -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation"
+                    app:strokeColor="@color/border_contrast"
+                    app:strokeWidth="1dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_medium">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_pemasukan"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/text_secondary"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvTotalPemasukan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xxsmall"
+                            android:text="Rp 14.513.800"
+                            android:textSize="@dimen/text_title"
+                            android:textColor="@color/sawit_primary"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rata: Rp 2.875/Kg"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Baris KPI 2: Pengeluaran & Laba Bersih/HPP -->
+            <LinearLayout
+                android:id="@+id/rowKpi2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/rowKpi1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- KPI Pengeluaran -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_xsmall"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation"
+                    app:strokeColor="@color/border_contrast"
+                    app:strokeWidth="1dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_medium">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_pengeluaran"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/text_secondary"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvTotalPengeluaran"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xxsmall"
+                            android:text="Rp 6.001.750"
+                            android:textSize="@dimen/text_title"
+                            android:textColor="@color/status_pengeluaran"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Upah + Pupuk + Langsir"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- KPI Laba Bersih & HPP -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation"
+                    app:cardBackgroundColor="@color/status_untung_bg"
+                    app:strokeColor="#86EFAC"
+                    app:strokeWidth="1dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_medium">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_laba_hpp"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/sawit_primary"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvLabaBersih"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xxsmall"
+                            android:text="Rp 8.512.050"
+                            android:textSize="@dimen/text_title"
+                            android:textColor="@color/status_untung"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvHppPerKg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HPP: Rp 1.189/Kg (UNTUNG)"
+                            android:textSize="@dimen/text_caption"
+                            android:textColor="@color/sawit_primary"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- ============================================================= -->
+            <!-- 4. KOTAK RUMUS EDUKASI KEUANGAN KEBUN SAWIT (IDENTIK PDF)     -->
+            <!-- ============================================================= -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardRumusEdukasi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#F0FDF4"
+                app:strokeColor="#BBF7D0"
+                app:strokeWidth="1dp"
+                app:layout_constraintTop_toBottomOf="@id/rowKpi2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_medium">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💡 Catatan Rumus Pengelolaan Keuangan Sawit:"
+                        android:textColor="@color/sawit_primary"
+                        android:textSize="@dimen/text_body_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xsmall"
+                        android:text="1. Keuntungan Bersih: Total Pemasukan − Total Pengeluaran (Rp 14.513.800 − Rp 6.001.750 = Rp 8.512.050)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_body_regular" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xxsmall"
+                        android:text="2. HPP (Harga Pokok): Total Pengeluaran ÷ Total Kg Netto (Rp 6.001.750 ÷ 5.047 Kg = Rp 1.189 / Kg)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_body_regular" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xsmall"
+                        android:text="✓ Artinya, selama harga jual TBS di atas Rp 1.189/kg, kebun Anda tetap untung!"
+                        android:textColor="@color/status_untung"
+                        android:textSize="@dimen/text_body_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- FLOATING ACTION BUTTONS (Standar Aksesibilitas Android >= 48dp) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_medium"
+        android:orientation="vertical">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabCatatBiaya"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:contentDescription="Catat Biaya Pengeluaran"
+            app:backgroundTint="@color/sawit_accent_gold"
+            app:tint="@color/text_on_primary"
+            app:fabSize="normal"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabJualTBS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/min_touch_target_size"
+            android:text="@string/btn_jual_tbs"
+            android:textColor="@color/text_on_primary"
+            app:backgroundTint="@color/sawit_primary"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconTint="@color/text_on_primary" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

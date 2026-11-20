@@ -1,0 +1,125 @@
+{
+  "active_kebun_id": "kebun-1",
+  "kebun_list": [
+    {
+      "id": "kebun-1",
+      "nama_kebun": "Kebun Sawit Berkah Mandiri",
+      "nama_pemilik": "H. Syamsudin",
+      "no_hp": "0812-7654-3210",
+      "nik": "1401021234560001",
+      "alamat_pemilik": "Jl. Poros Sawit No. 12, RT 03 / RW 02",
+      "luas_lahan_ha": 4.5,
+      "jumlah_pokok": 630,
+      "target_panen_ton": 6.0,
+      "varietas_bibit": "DxP Socfindo (Unggul Bersertifikat)",
+      "tahun_tanam": 2017,
+      "status_lahan": "SHM (Sertifikat Hak Milik)",
+      "lokasi_desa_blok": "Desa Makmur Jaya, Blok B3",
+      "kecamatan": "Tapung Hilir",
+      "kabupaten": "Kampar",
+      "provinsi": "Riau",
+      "koordinat_lat": 0.61245,
+      "koordinat_lng": 101.21456,
+      "pengumpul_utama": "RAM Makmur Jaya",
+      "kontak_ram": "0813-9876-5432 (H. Badrun)",
+      "kondisi_jalan": "Jalan Poros Aspal, Akses Pasar Pikul & TPH Padat Terawat",
+      "catatan_kebun": "Jarak tanam 9m x 9m segitiga sama sisi (140 pokok/Ha). Parit cacing lancar dan piringan bersih."
+    },
+    {
+      "id": "kebun-2",
+      "nama_kebun": "Kebun Sawit Sejahtera Blok C",
+      "nama_pemilik": "H. Syamsudin",
+      "no_hp": "0812-7654-3210",
+      "nik": "1401021234560001",
+      "alamat_pemilik": "Jl. Poros Sawit No. 12, RT 03 / RW 02",
+      "luas_lahan_ha": 3.0,
+      "jumlah_pokok": 420,
+      "target_panen_ton": 4.0,
+      "varietas_bibit": "Marihat",
+      "tahun_tanam": 2019,
+      "status_lahan": "SKT (Surat Keterangan Tanah)",
+      "lokasi_desa_blok": "Desa Rimba Beringin, Blok C2",
+      "kecamatan": "Tapung Hulu",
+      "kabupaten": "Kampar",
+      "provinsi": "Riau",
+      "koordinat_lat": 0.65820,
+      "koordinat_lng": 101.18940,
+      "pengumpul_utama": "RAM Berkah Sawit",
+      "kontak_ram": "0852-1122-3344 (Pak Joko)",
+      "kondisi_jalan": "Jalan Tanah Perkerasan Sirtu, Akses TPH Mudah",
+      "catatan_kebun": "Tanaman umur muda produktif, pemupukan organik dan NPK teratur."
+    }
+  ],
+  "penjualan_tbs": [
+    {
+      "id": "p-1",
+      "kebun_id": "kebun-1",
+      "tgl": "2026-11-05",
+      "pengumpul_ram": "RAM Makmur Jaya",
+      "bruto_kg": 2500,
+      "pot_persen": 2.0,
+      "netto_kg": 2450,
+      "harga_rp": 2850,
+      "total_rp": 6982500,
+      "status": "Lunas",
+      "no_nota": "NOTA-0511/MJ",
+      "catatan": "Panen rotasi ke-1 November. Buah matang merah, brondolan segar."
+    },
+    {
+      "id": "p-2",
+      "kebun_id": "kebun-1",
+      "tgl": "2026-11-19",
+      "pengumpul_ram": "RAM Makmur Jaya",
+      "bruto_kg": 2650,
+      "pot_persen": 2.0,
+      "netto_kg": 2597,
+      "harga_rp": 2900,
+      "total_rp": 7531300,
+      "status": "Lunas",
+      "no_nota": "NOTA-1911/MJ",
+      "catatan": "Panen rotasi ke-2 November. Kualitas TBS grade A."
+    }
+  ],
+  "pengeluaran_biaya": [
+    {
+      "id": "k-1",
+      "kebun_id": "kebun-1",
+      "tgl": "2026-11-01",
+      "kategori": "Pemupukan",
+      "rincian": "Beli 10 sak NPK Kujang @ Rp 440.000 + Transportasi",
+      "jumlah_rp": 4440000,
+      "keterangan": "Toko Tani",
+      "metode_bayar": "Transfer Bank"
+    },
+    {
+      "id": "k-2",
+      "kebun_id": "kebun-1",
+      "tgl": "2026-11-02",
+      "kategori": "Upah Perawatan",
+      "rincian": "Upah tabur pupuk 2 Orang (2 Hari Kerja / HK)",
+      "jumlah_rp": 300000,
+      "keterangan": "Tunai",
+      "metode_bayar": "Tunai"
+    },
+    {
+      "id": "k-3",
+      "kebun_id": "kebun-1",
+      "tgl": "2026-11-05",
+      "kategori": "Upah Panen & Langsir",
+      "rincian": "Ongkos pemanen & langsir motor 2.450 Kg @ Rp 250/Kg",
+      "jumlah_rp": 612500,
+      "keterangan": "Pemanen A",
+      "metode_bayar": "Tunai"
+    },
+    {
+      "id": "k-4",
+      "kebun_id": "kebun-1",
+      "tgl": "2026-11-19",
+      "kategori": "Upah Panen & Langsir",
+      "rincian": "Ongkos pemanen & langsir motor 2.597 Kg @ Rp 250/Kg",
+      "jumlah_rp": 649250,
+      "keterangan": "Pemanen A",
+      "metode_bayar": "Tunai"
+    }
+  ]
+}

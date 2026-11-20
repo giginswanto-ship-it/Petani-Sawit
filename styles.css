@@ -1,0 +1,268 @@
+/* Custom CSS untuk Sistem Informasi & Logbook Keuangan Kebun Sawit */
+/* Sesuai Standar Desain Android: dp / sp units, 48dp touch targets, ScrollView container, high-contrast outdoor */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  /* Android Density-Independent (dp) & Scale-Independent (sp) Tokens */
+  --android-dp-1: 1px;
+  --android-dp-4: 4px;
+  --android-dp-8: 8px;
+  --android-dp-12: 12px;
+  --android-dp-16: 16px;
+  --android-dp-24: 24px;
+  --android-dp-32: 32px;
+  --android-touch-target: 48px; /* Standar Android Aksesibilitas: Minimal 48dp x 48dp */
+
+  /* Android Scaled Typography (sp): Minimal 14sp - 16sp untuk isi */
+  --android-sp-caption: 0.8125rem; /* ~13sp */
+  --android-sp-body: 0.9375rem;    /* ~15sp (Memenuhi standar min 14-16sp) */
+  --android-sp-body-lg: 1rem;      /* 16sp */
+  --android-sp-title: 1.125rem;    /* 18sp */
+  --android-sp-headline: 1.375rem; /* 22sp */
+
+  /* Warna Kontras Tinggi untuk Penggunaan Outdoor di Kebun Sawit */
+  --primary-sawit: #1b4d3e;
+  --secondary-sawit: #14532d;
+  --accent-sawit: #16a34a;
+  --gold-tbs: #d97706;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --bg-page: #f8fafc;
+}
+
+/* Base Body dengan Keterbacaan Tinggi */
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-size: var(--android-sp-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Mencegah pemotongan layar saat keyboard Android muncul */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Standar Aksesibilitas Android: Target Sentuh Minimal 48dp x 48dp */
+.btn-touch, button, .touch-target {
+  min-height: var(--android-touch-target);
+  min-width: var(--android-touch-target);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ukuran Teks Isi Minimal 14sp - 16sp */
+p, span, td, th, label, input, select, textarea {
+  font-size: var(--android-sp-body);
+}
+
+.text-caption-android {
+  font-size: var(--android-sp-caption);
+}
+
+.font-mono-numbers {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Custom scrollbars & No-Scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ScrollView / NestedScrollView Container Behavior */
+/* Memastikan konten di bagian bawah tidak terpotong atau tertutup keyboard virtual */
+.scroll-container-android {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-padding-bottom: 9rem;
+  padding-bottom: 9rem; /* Ruang ekstra untuk floating button & keyboard */
+}
+
+/* Form Input Android Touch Friendly */
+input, select, textarea {
+  min-height: 48px;
+  font-size: 15px !important; /* Mencegah auto-zoom di browser mobile */
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #15803d !important;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25) !important;
+}
+
+/* Peta Leaflet Responsif */
+#mapKebun, #modalMap {
+  z-index: 10;
+  border-radius: 0.75rem;
+  min-height: 200px;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 9999px;
+}
+
+/* Tab Active State dengan Kontras Tinggi */
+.tab-btn {
+  min-height: 48px;
+  padding: 0.5rem 1rem;
+}
+.tab-btn.active {
+  background-color: #14532d;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 8px -1px rgba(20, 83, 45, 0.3);
+}
+
+/* Kategori Biaya - Kontras Tinggi Outdoor */
+.badge-pemupukan {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #f87171;
+  font-weight: 700;
+}
+.badge-perawatan {
+  background-color: #e0e7ff;
+  color: #312e81;
+  border: 1px solid #818cf8;
+  font-weight: 700;
+}
+.badge-panen {
+  background-color: #fef3c7;
+  color: #78350f;
+  border: 1px solid #f59e0b;
+  font-weight: 700;
+}
+.badge-herbisida {
+  background-color: #dcfce7;
+  color: #14532d;
+  border: 1px solid #4ade80;
+  font-weight: 700;
+}
+.badge-pruning {
+  background-color: #f3e8ff;
+  color: #581c87;
+  border: 1px solid #c084fc;
+  font-weight: 700;
+}
+.badge-alat {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #94a3b8;
+  font-weight: 700;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* =========================================================================
+   ADAPTIVE LAYOUT MEDIA QUERIES (HP KECIL, SEDANG, HINGGA TABLET >= 600dp)
+   ========================================================================= */
+
+/* HP Kecil (< 360dp) */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.25rem !important;
+  }
+  .kpi-number {
+    font-size: 1.5rem !important;
+  }
+  .table-responsive-wrapper {
+    font-size: 13px !important;
+  }
+}
+
+/* Tablet Layout (>= 600dp / values-w600dp) */
+@media (min-width: 600px) {
+  body {
+    font-size: 16px;
+  }
+  .tablet-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .scroll-container-android {
+    padding-bottom: 4rem;
+  }
+}
+
+/* Tablet Besar / Desktop (>= 840dp) */
+@media (min-width: 840px) {
+  .tablet-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================================
+   PRINT STYLES: DOKUMEN RESMI A4 PERSIS PDF
+   ========================================================================= */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10mm 15mm !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  table {
+    page-break-inside: avoid;
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  th, td {
+    border: 1px solid #64748b !important;
+    padding: 6px 8px !important;
+  }
+}
